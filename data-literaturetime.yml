@@ -1,0 +1,61 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: data-literaturetime
+    namespace: literature
+
+spec:
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: data-literaturetime
+        spec:
+            containers:
+                - name: data-literaturetime
+                  image: ghcr.io/blomma/data.literaturetime:main
+                  ports:
+                      - containerPort: 80
+                  env:
+                      - name: ASPNETCORE_URLS
+                        value: http://*:80
+                  imagePullPolicy: Always
+                  resources:
+                      limits:
+                          memory: "128Mi"
+                          cpu: "500m"
+    selector:
+        matchLabels:
+            app: data-literaturetime
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: data-literaturetime
+    namespace: literature
+
+spec:
+    ports:
+        - name: http
+          port: 80
+    selector:
+        app: data-literaturetime
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+    name: data-literaturetime
+    namespace: literature
+
+spec:
+    entryPoints:
+        - web
+    routes:
+        - match: Host(`data-literaturetime.192.168.1.11.nip.io`) && PathPrefix(`/api/1.0/literature`)
+          kind: Rule
+          services:
+              - name: data-literaturetime
+                port: http
