@@ -54,7 +54,7 @@ spec:
     entryPoints:
         - web
     routes:
-        - match: Host(`api-literaturetime.192.168.1.11.nip.io`) && PathPrefix(`/api/1.0/literature`)
+        - match: Host(`api-literaturetime.192.168.1.11.nip.io`) && PathPrefix(`/api/2.0/literature`)
           kind: Rule
           services:
               - name: api-literaturetime
