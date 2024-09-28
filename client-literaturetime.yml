@@ -6,7 +6,7 @@ metadata:
     namespace: literature
 
 spec:
-    replicas: 2
+    replicas: 1
     template:
         metadata:
             labels:
@@ -23,8 +23,8 @@ spec:
                   imagePullPolicy: Always
                   resources:
                       limits:
-                          memory: "512Mi"
-                          cpu: "1000m"
+                          memory: "128Mi"
+                          cpu: "500m"
     selector:
         matchLabels:
             app: client-literaturetime
@@ -42,38 +42,6 @@ spec:
           port: 80
     selector:
         app: client-literaturetime
-
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-    name: client-literaturetime-dev-http
-    namespace: literature
-spec:
-    entryPoints:
-        - web
-    routes:
-        - match: Host(`client-literaturetime.192.168.1.11.nip.io`) && PathPrefix(`/`)
-          kind: Rule
-          services:
-              - name: client-literaturetime
-                port: http
-
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-    name: client-literaturetime-dev-https
-    namespace: literature
-spec:
-    entryPoints:
-        - websecure
-    routes:
-        - match: Host(`client-literaturetime.192.168.1.11.nip.io`) && PathPrefix(`/`)
-          kind: Rule
-          services:
-              - name: client-literaturetime
-                port: http
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
